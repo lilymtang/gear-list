@@ -10,10 +10,10 @@ function App() {
   return (
     <>
       <div className="container">
-        {/* <CreateItem /> */}
+        <CreateItem />
         <EditableTable />
       </div>
-    </>);
+    </>); 
 }
 
 export default App;

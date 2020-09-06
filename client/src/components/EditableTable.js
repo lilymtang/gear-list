@@ -65,7 +65,7 @@ const EditableCell = ({
 
 	if (editable) {
         let conditionalRule;
-        if (title == "Item Name" || title == "Category") {
+        if (title === "Item Name" || title === "Category") {
             conditionalRule = {
                 required: true,
                 message: `${title} is required.`,
