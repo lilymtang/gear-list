@@ -34,7 +34,10 @@ app.post("/items/", async(req, res) => {
 // get all items
 app.get("/items/", async(req, res) => {
     try {
-        const allItems = await pool.query("SELECT * FROM item");
+        const allItems = await pool.query(
+            `SELECT *
+            FROM item`
+        );
         res.json(allItems.rows);
     } catch (err) {
         console.log(err.message);
@@ -56,8 +59,16 @@ app.get("/items/:id", async(req, res) => {
 app.put("/items/:id", async(req, res) => {
     try {
         const { id } = req.params;
-        const { name } = req.body;
-        const updateItem = await pool.query("UPDATE item SET name = $1 WHERE id = $2", [name, id]);
+        const { name, productName, type, category, weight } = req.body;
+        console.log(req);
+        const updateItem = await pool.query(
+            `UPDATE item 
+                SET name = $1,
+                    product_name = $2,
+                    type = $3,
+                    category = $4,
+                    weight = $5 
+                WHERE id = $6`, [name, productName, type, category, weight, id]);
         res.json("Item updated");
     } catch (err) {
         console.log(err.message);

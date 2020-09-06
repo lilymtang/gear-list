@@ -1,15 +1,17 @@
 import React from 'react';
-import "./App.css";
+import "./App.less";
 
 
 // import components
 import CreateItem from "./components/CreateItem"
+import EditableTable from "./components/EditableTable"
 
 function App() {
   return (
     <>
       <div className="container">
-        <CreateItem />
+        {/* <CreateItem /> */}
+        <EditableTable />
       </div>
     </>);
 }
