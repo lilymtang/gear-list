@@ -1,46 +1,50 @@
 import React from "react";
-import { Form, Input, InputNumber, Button, Select, Radio } from "antd";
-import "antd/dist/antd.less"; 
- 
+import { Form, Input, InputNumber, Button, Radio } from "antd";
+import "antd/dist/antd.less";
+
 const layout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 8 },
 };
 
-const CreateItem = () => {
+const CreateItem = (props) => {
     const [form] = Form.useForm();
 
-    const AddFields = values => {
+    const AddFields = formValue => {
         // TODO: don't hardcode these
-        values["accountId"] = 1000;
-        values["isInventory"] = true;
+        formValue["accountId"] = 1000;
+        formValue["isInventory"] = true;
     }
-    
-    const onFinish = values => {
-        AddFields(values);
-        
+
+    const onFinish = async formValue => {
+        AddFields(formValue);
+
         try {
-            const body = {values};
-            console.log(body.values);
-            const response = fetch("http://localhost:5000/items", {
+            console.log("onFinish");
+            console.log(formValue);
+
+            // Update data in EditableTableContainer with form value
+            props.onFinish([...props.tableData, formValue]);
+
+            await fetch("http://localhost:5000/items", {
                 method: "POST",
-                headers: { "Content-Type": "application/json"},
-                body: JSON.stringify(body.values)
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formValue)
             });
-        } catch(err) {
+        } catch (err) {
             console.log(err.message);
         }
 
         form.resetFields();
     };
-      
+
     return (
         <>
             <Form {...layout} form={form} name="control-hooks" onFinish={onFinish} layout="vertical"
                 initialValues={{
                     "type": null,
                     "weight": 0.00
-                  }}>
+                }}>
                 <Form.Item label="Item Name" name="name" rules={[{ required: true }]} required>
                     <Input placeholder="backpack, tent, sleeping bag" allowClear />
                 </Form.Item>

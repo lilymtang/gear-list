@@ -1,69 +1,69 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Table, Input, Button, Popconfirm, Form } from "antd";
-import "antd/dist/antd.less"; 
- 
+import "antd/dist/antd.less";
+
 const EditableContext = React.createContext();
 
 const EditableRow = ({ index, ...props }) => {
     const [form] = Form.useForm();
-	return (
-		<Form form={form} component={false}>
-			<EditableContext.Provider value={form}>
-				<tr {...props} />
-			</EditableContext.Provider>
-		</Form>
-	);
+    return (
+        <Form form={form} component={false}>
+            <EditableContext.Provider value={form}>
+                <tr {...props} />
+            </EditableContext.Provider>
+        </Form>
+    );
 };
 
 const EditableCell = ({
-	title,
-	editable,
-	children,
-	dataIndex,
-	record,
-	handleSave,
-	...restProps
+    title,
+    editable,
+    children,
+    dataIndex,
+    record,
+    handleSave,
+    ...restProps
 }) => {
-	const [editing, setEditing] = useState(false);
-	const inputRef = useRef();
-	const form = useContext(EditableContext);
-	useEffect(() => {
-		if (editing) {
-			inputRef.current.focus();
-		}
-	}, [editing]);
+    const [editing, setEditing] = useState(false);
+    const inputRef = useRef();
+    const form = useContext(EditableContext);
+    useEffect(() => {
+        if (editing) {
+            inputRef.current.focus();
+        }
+    }, [editing]);
 
-	const toggleEdit = () => {
-		setEditing(!editing);
-		form.setFieldsValue({
-			[dataIndex]: record[dataIndex],
-		});
-	};
+    const toggleEdit = () => {
+        setEditing(!editing);
+        form.setFieldsValue({
+            [dataIndex]: record[dataIndex],
+        });
+    };
 
-	const save = async e => {
-		try {
+    const save = async e => {
+        try {
             const values = await form.validateFields();
             toggleEdit();
             const newRecord = { ...record, ...values };
             handleSave(newRecord);
-
+            console.log(newRecord.id);
             try {
                 await fetch(`http://localhost:5000/items/${newRecord.id}`, {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json"},
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(newRecord)
                 });
-            } catch(err) {
+            } catch (err) {
                 console.log(err.message);
-            }    
-		} catch (errInfo) {
-			console.log("Save failed:", errInfo);
-		}
-	};
+            }
+        } catch (errInfo) {
+            console.log("Save failed:", errInfo);
+        }
+    };
 
-	let childNode = children;
+    let childNode = children;
 
-	if (editable) {
+    if (editable) {
         let conditionalRule;
         if (title === "Item Name" || title === "Category") {
             conditionalRule = {
@@ -74,32 +74,32 @@ const EditableCell = ({
         else {
             conditionalRule = {}
         }
-		childNode = editing ? (
-			<Form.Item
-				style={{
-					margin: 0,
-				}}
-				name={dataIndex}
-				rules={[
-					conditionalRule
-				]}
-			>
-				<Input ref={inputRef} onPressEnter={save} onBlur={save} />
-			</Form.Item>
-		) : (
-			<div
-				className="editable-cell-value-wrap"
-				style={{
-                    paddingRight: 24
-				}}
-				onClick={toggleEdit}
-			>
-				{children}
-			</div>
-		);
-	}
+        childNode = editing ? (
+            <Form.Item
+                style={{
+                    margin: 0,
+                }}
+                name={dataIndex}
+                rules={[
+                    conditionalRule
+                ]}
+            >
+                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+            </Form.Item>
+        ) : (
+                <div
+                    className="editable-cell-value-wrap"
+                    style={{
+                        paddingRight: 24
+                    }}
+                    onClick={toggleEdit}
+                >
+                    {children}
+                </div>
+            );
+    }
 
-	return <td {...restProps}>{childNode}</td>;
+    return <td {...restProps}>{childNode}</td>;
 };
 
 class EditableTable extends React.Component {
@@ -131,80 +131,50 @@ class EditableTable extends React.Component {
             },
             {
                 title: "",
-                dataIndex: "operation",
+                dataIndex: "delete",
                 render: (text, record) =>
-                    this.state.dataSource.length >= 1 ? (
+                    this.props.tableData.length >= 1 ? (
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
                             <a>Delete</a>
                         </Popconfirm>
                     ) : null,
             },
         ];
-
-        this.state = {
-            dataSource: []
-        };
     }
 
+    // Sets initial state of EditableTable
     componentDidMount = async () => {
         try {
             const response = await fetch("http://localhost:5000/items");
-            const jsonData = await response.json();
-
-            jsonData.map( (item) => 
-                item["key"] = item.id
-            );
-
-            this.setState({ 
-                dataSource: jsonData
-            });
-        } catch(err) {
+            const tableData = await response.json();
+            tableData.map((item) => item["key"] = item.id);
+            this.props.setTableData(tableData);
+        } catch (err) {
             console.log(err.message);
         }
     }
 
     handleDelete = async key => {
-        const dataSource = [...this.state.dataSource];
-
         try {
             await fetch(`http://localhost:5000/items/${key}`, {
                 method: "DELETE"
             });
-            this.setState({
-                dataSource: dataSource.filter(item => item.key !== key),
-            });
-        } catch(err) {
+            this.props.setTableData(this.props.tableData.filter(item => item.key !== key));
+        } catch (err) {
             console.log(err.message)
         }
     };
 
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
-        this.setState({
-            dataSource: [...dataSource, newData],
-            count: count + 1,
-        });
-    };
-
     handleSave = row => {
-        const newData = [...this.state.dataSource];
+        const newData = [...this.props.tableData];
         const index = newData.findIndex(item => row.key === item.key);
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
 
-        this.setState({
-          dataSource: newData,
-        });
-      };
+        this.props.setTableData(newData);
+    };
 
     render() {
-        const { dataSource } = this.state;
         const components = {
             body: {
                 row: EditableRow,
@@ -227,28 +197,19 @@ class EditableTable extends React.Component {
                 }),
             };
         });
+
         return (
             <div>
-                <Button
-                    onClick={this.handleAdd}
-                    type="primary"
-                    style={{
-                        marginBottom: 16,
-                    }}
-                >
-                    Add Item
-                </Button>
                 <Table
                     components={components}
                     rowClassName={() => "editable-row"}
-                    bordered
-                    dataSource={dataSource}
+                    dataSource={this.props.tableData}
                     columns={columns}
+                    bordered
                 />
             </div>
         );
     }
 }
-
 
 export default EditableTable;
