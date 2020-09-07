@@ -10,7 +10,7 @@ function EditableTableContainer() {
     const setTableData = (updatedTableData) => {
         setData(updatedTableData);
         console.log("Setting table data:");
-        console.log(tableData);
+        console.log(updatedTableData);
     };
 
     return (

@@ -46,7 +46,6 @@ const EditableCell = ({
             toggleEdit();
             const newRecord = { ...record, ...values };
             handleSave(newRecord);
-            console.log(newRecord.id);
             try {
                 await fetch(`http://localhost:5000/items/${newRecord.id}`, {
                     method: "PUT",
@@ -185,7 +184,6 @@ class EditableTable extends React.Component {
             if (!col.editable) {
                 return col;
             }
-
             return {
                 ...col,
                 onCell: record => ({

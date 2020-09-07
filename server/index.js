@@ -10,9 +10,9 @@ app.use(express.json());
 //Routes
 
 // create an item
-app.post("/items/", async(req, res) => {
+app.post("/items/", async (req, res) => {
     try {
-        const { name, productName, type, category, weight, accountId, isInventory} = req.body;
+        const { name, product_name, type, category, weight, account_id, is_inventory } = req.body;
         const newItem = await pool.query(
             `INSERT INTO item (
                 name, 
@@ -23,7 +23,7 @@ app.post("/items/", async(req, res) => {
                 account_id, 
                 is_inventory
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [name, productName, type, category, weight, accountId, isInventory]
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [name, product_name, type, category, weight, account_id, is_inventory]
         );
         res.json(newItem.rows[0]);
     } catch (err) {
@@ -32,7 +32,7 @@ app.post("/items/", async(req, res) => {
 })
 
 // get all items
-app.get("/items/", async(req, res) => {
+app.get("/items/", async (req, res) => {
     try {
         const allItems = await pool.query(
             `SELECT *
@@ -45,7 +45,7 @@ app.get("/items/", async(req, res) => {
 })
 
 // get an item
-app.get("/items/:id", async(req, res) => {
+app.get("/items/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const item = await pool.query("SELECT * FROM item WHERE id = $1", [id]);
@@ -56,10 +56,10 @@ app.get("/items/:id", async(req, res) => {
 })
 
 // update an item
-app.put("/items/:id", async(req, res) => {
+app.put("/items/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, productName, type, category, weight } = req.body;
+        const { name, product_name, type, category, weight } = req.body;
         console.log(req);
         const updateItem = await pool.query(
             `UPDATE item 
@@ -68,7 +68,7 @@ app.put("/items/:id", async(req, res) => {
                     type = $3,
                     category = $4,
                     weight = $5 
-                WHERE id = $6`, [name, productName, type, category, weight, id]);
+                WHERE id = $6`, [name, product_name, type, category, weight, id]);
         res.json("Item updated");
     } catch (err) {
         console.log(err.message);
@@ -76,7 +76,7 @@ app.put("/items/:id", async(req, res) => {
 })
 
 // delete an item
-app.delete("/items/:id", async(req, res) => {
+app.delete("/items/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const deleteItem = await pool.query("DELETE FROM item WHERE id = $1", [id]);

@@ -12,16 +12,15 @@ const CreateItem = (props) => {
 
     const AddFields = formValue => {
         // TODO: don't hardcode these
-        formValue["accountId"] = 1000;
-        formValue["isInventory"] = true;
+        formValue["account_id"] = 1000;
+        formValue["is_inventory"] = true;
     }
 
     const onFinish = async formValue => {
         AddFields(formValue);
 
         try {
-            console.log("onFinish");
-            console.log(formValue);
+            formValue["key"] = formValue.id;
 
             // Update data in EditableTableContainer with form value
             props.onFinish([...props.tableData, formValue]);
@@ -54,7 +53,7 @@ const CreateItem = (props) => {
                 <Form.Item label="Weight" name="weight">
                     <InputNumber min={0.00} step={0.01} />
                 </Form.Item>
-                <Form.Item label="Product Name" name="productName">
+                <Form.Item label="Product Name" name="product_name">
                     <Input placeholder="Granite Gear Crown2 60" allowClear />
                 </Form.Item>
                 <Form.Item label="Type" name="type">
