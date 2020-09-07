@@ -3,8 +3,8 @@ import { Form, Input, InputNumber, Button, Radio } from "antd";
 import "antd/dist/antd.less";
 
 const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 8 },
+    // labelCol: { span: 16 },
+    // wrapperCol: { span: 16 },
 };
 
 const CreateItem = (props) => {
@@ -20,11 +20,6 @@ const CreateItem = (props) => {
         AddFields(formValue);
 
         try {
-            formValue["key"] = props.tableData.length;
-
-            // Update data in EditableTableContainer with form value
-            // props.onFinish([...props.tableData, formValue]);
-
             await fetch("http://localhost:5000/items", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

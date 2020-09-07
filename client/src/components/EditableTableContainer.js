@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.less";
 import EditableTable from "./EditableTable";
-import CreateItem from "./CreateItem";
+import CreateItemDrawer from "./CreateItemDrawer";
 
 function EditableTableContainer() {
     const [tableData, setData] = useState([]);
@@ -22,7 +22,7 @@ function EditableTableContainer() {
 
     return (
         <>
-            <CreateItem tableData={tableData} onFinish={setTableData} getAndUpdateItems={getAndUpdateItems} />
+            <CreateItemDrawer tableData={tableData} onFinish={setTableData} getAndUpdateItems={getAndUpdateItems} />
             <EditableTable tableData={tableData} setTableData={setTableData} getAndUpdateItems={getAndUpdateItems} />
         </>
     );
