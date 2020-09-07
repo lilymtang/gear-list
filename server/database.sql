@@ -22,6 +22,22 @@ CREATE TABLE account (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE pack (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    user_id INTEGER REFERENCES account NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE pack_has_item(
+    pack_id INTEGER pack NOT NULL,
+    item_id INTEGER item NOT NULL,
+    FOREIGN KEY (pack_id) REFERENCES pack(id), 
+    FOREIGN KEY (item_id) REFERENCES item(id),
+    UNIQUE (pack_id, item_id)
+);
+
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN

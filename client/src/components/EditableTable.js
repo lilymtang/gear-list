@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { Table, Input, Button, Popconfirm, Form } from "antd";
+import { Table, Input, Popconfirm, Form } from "antd";
 import "antd/dist/antd.less";
 
 const EditableContext = React.createContext();
@@ -27,9 +27,12 @@ const EditableCell = ({
     const [editing, setEditing] = useState(false);
     const inputRef = useRef();
     const form = useContext(EditableContext);
+    var oldValue;
+
     useEffect(() => {
         if (editing) {
             inputRef.current.focus();
+            // oldValue = record[dataIndex];
         }
     }, [editing]);
 
@@ -42,18 +45,24 @@ const EditableCell = ({
 
     const save = async e => {
         try {
-            const values = await form.validateFields();
-            toggleEdit();
-            const newRecord = { ...record, ...values };
-            handleSave(newRecord);
-            try {
-                await fetch(`http://localhost:5000/items/${newRecord.id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(newRecord)
-                });
-            } catch (err) {
-                console.log(err.message);
+            const newValue = await form.validateFields();
+
+            // Skip save actions if new value is unchanged
+            if (oldValue !== newValue[dataIndex]) {
+                toggleEdit();
+                const newRecord = { ...record, ...newValue };
+                console.log("Old value is:", oldValue);
+                console.log("New value is:", newValue[dataIndex]);
+                handleSave(newRecord);
+                try {
+                    await fetch(`http://localhost:5000/items/${newRecord.id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(newRecord)
+                    });
+                } catch (err) {
+                    console.log(err.message);
+                }
             }
         } catch (errInfo) {
             console.log("Save failed:", errInfo);
@@ -104,6 +113,10 @@ const EditableCell = ({
 class EditableTable extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            loading: true
+        };
+
         this.columns = [
             {
                 title: "Item Name",
@@ -144,7 +157,7 @@ class EditableTable extends React.Component {
     // Sets initial state of EditableTable
     componentDidMount = async () => {
         try {
-            this.props.getAndUpdateItems();
+            this.props.getAndUpdateItems().then(() => this.setState({ loading: false }))
         } catch (err) {
             console.log(err.message);
         }
@@ -202,6 +215,8 @@ class EditableTable extends React.Component {
                     dataSource={this.props.tableData}
                     columns={columns}
                     bordered
+                    loading={this.state.loading}
+                    locale={{ emptyText: "Fetching your items" }}
                 />
             </div>
         );
