@@ -144,16 +144,14 @@ class EditableTable extends React.Component {
     // Sets initial state of EditableTable
     componentDidMount = async () => {
         try {
-            const response = await fetch("http://localhost:5000/items");
-            const tableData = await response.json();
-            tableData.map((item, i) => item["key"] = i);
-            this.props.setTableData(tableData);
+            this.props.getAndUpdateItems();
         } catch (err) {
             console.log(err.message);
         }
     }
 
     handleDelete = async key => {
+        console.log("delete item:", key);
         try {
             await fetch(`http://localhost:5000/items/${key}`, {
                 method: "DELETE"

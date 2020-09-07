@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "antd/dist/antd.less";
 import EditableTable from "./EditableTable";
 import CreateItem from "./CreateItem";
@@ -13,10 +13,17 @@ function EditableTableContainer() {
         console.log(updatedTableData);
     };
 
+    const getAndUpdateItems = async () => {
+        const response = await fetch("http://localhost:5000/items");
+        const tableData = await response.json();
+        tableData.map((item) => item["key"] = item.id);
+        setTableData(tableData);
+    }
+
     return (
         <>
-            <CreateItem tableData={tableData} onFinish={setTableData} />
-            <EditableTable tableData={tableData} setTableData={setTableData} />
+            <CreateItem tableData={tableData} onFinish={setTableData} getAndUpdateItems={getAndUpdateItems} />
+            <EditableTable tableData={tableData} setTableData={setTableData} getAndUpdateItems={getAndUpdateItems} />
         </>
     );
 }

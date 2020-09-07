@@ -23,13 +23,15 @@ const CreateItem = (props) => {
             formValue["key"] = props.tableData.length;
 
             // Update data in EditableTableContainer with form value
-            props.onFinish([...props.tableData, formValue]);
+            // props.onFinish([...props.tableData, formValue]);
 
             await fetch("http://localhost:5000/items", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formValue)
-            });
+            })
+
+            props.getAndUpdateItems();
         } catch (err) {
             console.log(err.message);
         }
