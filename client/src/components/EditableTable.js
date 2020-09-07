@@ -146,7 +146,7 @@ class EditableTable extends React.Component {
         try {
             const response = await fetch("http://localhost:5000/items");
             const tableData = await response.json();
-            tableData.map((item) => item["key"] = item.id);
+            tableData.map((item, i) => item["key"] = i);
             this.props.setTableData(tableData);
         } catch (err) {
             console.log(err.message);

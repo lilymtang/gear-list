@@ -20,7 +20,7 @@ const CreateItem = (props) => {
         AddFields(formValue);
 
         try {
-            formValue["key"] = formValue.id;
+            formValue["key"] = props.tableData.length;
 
             // Update data in EditableTableContainer with form value
             props.onFinish([...props.tableData, formValue]);
