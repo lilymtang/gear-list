@@ -20,13 +20,16 @@ const CreateItem = (props) => {
         AddFields(formValue);
 
         try {
-            await fetch("http://localhost:5000/items", {
+            const res = await fetch("http://localhost:5000/items", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formValue)
             })
 
-            props.getAndUpdateItems();
+            const body = await res.json();
+            formValue["id"] = body.id;
+            formValue["key"] = body.id;
+            props.onFinish([...props.tableData, formValue]);
         } catch (err) {
             console.log(err.message);
         }

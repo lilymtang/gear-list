@@ -25,7 +25,7 @@ app.post("/items/", async (req, res) => {
             )
             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`, [name, product_name, type, category, weight, account_id, is_inventory]
         );
-        res.json(newItem.rows[0]);
+        return res.json(newItem.rows[0]);
     } catch (err) {
         console.log(err.message);
     }

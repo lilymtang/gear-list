@@ -22,7 +22,7 @@ function EditableTableContainer() {
 
     return (
         <>
-            <CreateItemDrawer tableData={tableData} onFinish={setTableData} getAndUpdateItems={getAndUpdateItems} />
+            <CreateItemDrawer tableData={tableData} onFinish={setTableData} />
             <EditableTable tableData={tableData} setTableData={setTableData} getAndUpdateItems={getAndUpdateItems} />
         </>
     );
