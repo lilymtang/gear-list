@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Drawer, Button } from "antd";
+import { Drawer, Button, Row, Col } from "antd";
 import CreateItem from "./CreateItem"
 
 const CreateItemDrawer = (props) => {
@@ -17,9 +17,16 @@ const CreateItemDrawer = (props) => {
 
     return (
         <>
-            <Button type="primary" onClick={showDrawer}>
-                Add Item
-            </Button>
+            <Row>
+                <Col span={3}>
+                    <h3>My Items</h3>
+                </Col>
+                <Col>
+                    <Button type="primary" onClick={showDrawer}>
+                        Add Item
+                    </Button>
+                </Col>
+            </Row>
             <Drawer
                 title="Add Item"
                 placement="left"
@@ -30,6 +37,7 @@ const CreateItemDrawer = (props) => {
             >
                 <CreateItem tableData={tableData} onFinish={onFinish} getAndUpdateItems={getAndUpdateItems} />
             </Drawer>
+
         </>
     );
 };

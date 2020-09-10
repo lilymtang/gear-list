@@ -86,6 +86,69 @@ app.delete("/items/:id", async (req, res) => {
     }
 })
 
+// create a pack
+app.post("/packs/", async (req, res) => {
+    try {
+        const { name, account_id } = req.body;
+        const newPack = await pool.query(
+            `INSERT INTO pack (
+                name,
+                account_id
+            )
+            VALUES ($1, $2) RETURNING *`, [name, account_id]
+        );
+        return res.json(newPack.rows[0]);
+    } catch (err) {
+        console.log(err.message);
+    }
+})
+
+// add item to a pack
+app.post("/packs/:pack_id/items/:item_id", async (req, res) => {
+    try {
+        const { pack_id, item_id } = req.body;
+        const newPack = await pool.query(
+            `INSERT INTO pack_has_item (
+                pack_id,
+                item_id
+            )
+            VALUES ($1, $2) RETURNING *`, [pack_id, item_id]
+        );
+        res.json(newPack.rows[0]);
+    } catch (err) {
+        console.log(err.message);
+    }
+})
+
+// delete item from a pack
+app.delete("/packs/:pack_id/items/:item_id", async (req, res) => {
+    try {
+        const { pack_id, item_id } = req.params;
+        const deleteItem = await pool.query("DELETE FROM pack_has_item WHERE pack_id = $1 and item_id = $2", [pack_id, item_id]);
+        res.json("Item deleted");
+    } catch (err) {
+        console.log(err.message);
+    }
+})
+
+// get items in a pack
+app.get("/packs/:id/items", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const packItems = await pool.query(
+            `SELECT *
+            FROM item 
+            LEFT JOIN pack_has_item
+            ON pack_has_item.item_id = item.id
+            WHERE pack_id = $1`, [id]
+        );
+        res.json(packItems.rows);
+    } catch (err) {
+        console.log(err.message);
+    }
+})
+
+
 app.listen(5000, () => {
     console.log("Server has started on port 5000");
 });

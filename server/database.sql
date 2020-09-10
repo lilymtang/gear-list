@@ -31,10 +31,10 @@ CREATE TABLE pack (
 );
 
 CREATE TABLE pack_has_item(
-    pack_id INTEGER pack NOT NULL,
-    item_id INTEGER item NOT NULL,
-    FOREIGN KEY (pack_id) REFERENCES pack(id), 
-    FOREIGN KEY (item_id) REFERENCES item(id),
+    pack_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    FOREIGN KEY (pack_id) REFERENCES pack(id) ON DELETE CASCADE, 
+    FOREIGN KEY (item_id) REFERENCES item(id) ON DELETE CASCADE,
     UNIQUE (pack_id, item_id)
 );
 

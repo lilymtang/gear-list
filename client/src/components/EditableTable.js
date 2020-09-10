@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Table, Input, Popconfirm, Form } from "antd";
-import "antd/dist/antd.less";
 
 const EditableContext = React.createContext();
 
@@ -85,7 +84,7 @@ const EditableCell = ({
         childNode = editing ? (
             <Form.Item
                 style={{
-                    margin: 0,
+                    margin: 0
                 }}
                 name={dataIndex}
                 rules={[
@@ -97,9 +96,9 @@ const EditableCell = ({
         ) : (
                 <div
                     className="editable-cell-value-wrap"
-                    style={{
-                        paddingRight: 24
-                    }}
+                    // style={{
+                    //     paddingRight: 24
+                    // }}
                     onClick={toggleEdit}
                 >
                     {children}
@@ -121,33 +120,37 @@ class EditableTable extends React.Component {
             {
                 title: "Item Name",
                 dataIndex: "name",
-                width: "30%",
+                sorter: (a, b) => a.name.localeCompare(b.name),
+                editable: true
+            },
+            {
+                title: "Product Name",
+                dataIndex: "product_name",
+                sorter: (a, b) => a.product_name.localeCompare(b.product_name),
                 editable: true
             },
             {
                 title: "Category",
                 dataIndex: "category",
+                sorter: (a, b) => a.category.localeCompare(b.category),
                 editable: true
-            },
-            {
-                title: "Weight",
-                dataIndex: "weight"
-            },
-            {
-                title: "Product Name",
-                dataIndex: "product_name"
             },
             {
                 title: "Type",
                 dataIndex: "type"
             },
             {
+                title: "Weight",
+                dataIndex: "weight",
+                sorter: (a, b) => a.weight - b.weight
+            },
+            {
                 title: "",
                 dataIndex: "delete",
                 render: (text, record) =>
                     this.props.tableData.length >= 1 ? (
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                            <a>Delete</a>
+                        <Popconfirm title="Are you sure?" onConfirm={() => this.handleDelete(record.key)}>
+                            <a href="/#">Delete</a>
                         </Popconfirm>
                     ) : null,
             },
@@ -214,7 +217,6 @@ class EditableTable extends React.Component {
                     rowClassName={() => "editable-row"}
                     dataSource={this.props.tableData}
                     columns={columns}
-                    bordered
                     loading={this.state.loading}
                     locale={{ emptyText: "Fetching your items" }}
                 />

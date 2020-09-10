@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "antd/dist/antd.less";
 import EditableTable from "./EditableTable";
 import CreateItemDrawer from "./CreateItemDrawer";
 
