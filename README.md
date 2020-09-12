@@ -25,7 +25,7 @@ The following features are pending:
 - [ ] User can create multiple packs
 - [ ] User can change the quantity of items in their pack
 - [ ] User can see subtotals for their pack weight by category
-- [ ] User can see subtotals for their pack weight by Base Weight (mins worn and consumables), Carrying Weight (minus consumables), and Total Weight (minus worn)
+- [ ] User can see subtotals for their pack weight by Base Weight (minus worn and consumables), Carrying Weight (minus worn), and Total Weight
 - [ ] Users can see graphs on their pack weight breakdowns
 
 This project is in a nascent stage and I am excited to continue adding new features!
