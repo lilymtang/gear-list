@@ -14,9 +14,9 @@ GearList is a full stack web app that allows backpackers to keep track of their 
 
 The following functionality is completed:
 
-- [x] User can add item to pack
-- [x] User can edit items in the pack through the editable table
-- [x] User can one click add items from their inventory to a pack
+- [x] User can add to and delete items from My Items
+- [x] User can edit items in My Items through the editable table
+- [x] User can one click add items from My Items to a pack
 - [x] User can see the total pack weight
 
 The following features are pending:
